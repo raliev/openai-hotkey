@@ -15,7 +15,6 @@
 		E2443A4A2B18139000624F0C /* openai_hotkeyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2443A492B18139000624F0C /* openai_hotkeyUITestsLaunchTests.swift */; };
 		E2443A572B18175300624F0C /* KeyInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2443A562B18175300624F0C /* KeyInterceptor.swift */; };
 		E2443A592B181CC200624F0C /* TextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2443A582B181CC200624F0C /* TextProcessor.swift */; };
-		E2443A5B2B183B8800624F0C /* TextExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2443A5A2B183B8800624F0C /* TextExtractor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +47,6 @@
 		E2443A492B18139000624F0C /* openai_hotkeyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = openai_hotkeyUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		E2443A562B18175300624F0C /* KeyInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyInterceptor.swift; sourceTree = "<group>"; };
 		E2443A582B181CC200624F0C /* TextProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextProcessor.swift; sourceTree = "<group>"; };
-		E2443A5A2B183B8800624F0C /* TextExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextExtractor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +103,6 @@
 				E2443A312B18138F00624F0C /* openai_hotkey.entitlements */,
 				E2443A322B18138F00624F0C /* Preview Content */,
 				E2443A582B181CC200624F0C /* TextProcessor.swift */,
-				E2443A5A2B183B8800624F0C /* TextExtractor.swift */,
 			);
 			path = "openai-hotkey";
 			sourceTree = "<group>";
@@ -268,7 +265,6 @@
 				E2443A572B18175300624F0C /* KeyInterceptor.swift in Sources */,
 				E2443A2C2B18138D00624F0C /* openai_hotkeyApp.swift in Sources */,
 				E2443A592B181CC200624F0C /* TextProcessor.swift in Sources */,
-				E2443A5B2B183B8800624F0C /* TextExtractor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

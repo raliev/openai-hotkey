@@ -67,7 +67,6 @@ class KeyInterceptor {
                 
                 self.textProcessor.processText(prefix, clipboardString) { response in
                                     DispatchQueue.main.async {
-                                        // Обработка ответа и замена текста
                                         self.replaceSelectedText(with: response)
                                     }
                                 }
@@ -82,7 +81,6 @@ class KeyInterceptor {
     private func replaceSelectedText(with text: String) {
         let source = CGEventSource(stateID: .hidSystemState)
         
-        // Вставка нового текста вместо выделенного
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
 

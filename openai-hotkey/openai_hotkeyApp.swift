@@ -38,6 +38,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         self.interceptor = KeyInterceptor(textProcessor: TextProcessor())
-        // Здесь ваш код для инициализации приложения
     }
 }

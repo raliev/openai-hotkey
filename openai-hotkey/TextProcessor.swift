@@ -28,7 +28,7 @@ class TextProcessor {
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
-                print("Ошибка запроса: \(error?.localizedDescription ?? "неизвестная ошибка")")
+                print("Error: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
             
@@ -40,13 +40,13 @@ class TextProcessor {
                 let resp = responseText.choices.first?.message.content
 
                     // Логгирование ответа от ChatGPT
-                    print("Ответ ChatGPT: \(resp ?? "Пустой ответ")")
+                    print("ChatGPT Response: \(resp ?? "Пустой ответ")")
 
                     completion(resp ?? "")
                 } else {
                     // Логгирование сырого ответа, если не удалось декодировать
-                    let rawResponseString = String(data: data, encoding: .utf8) ?? "Невозможно декодировать данные"
-                    print("Сырой ответ: \(rawResponseString)")
+                    let rawResponseString = String(data: data, encoding: .utf8) ?? "can't decode the response"
+                    print("Response: \(rawResponseString)")
                 }
         }
         task.resume()
