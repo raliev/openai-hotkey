@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "closure #1 in TextProcessor.processText(_:completion:):TextProcessor.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "JSONDecoder().decode(ChatGPTResponse.self, data)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "KeyInterceptor.handleEvent(proxy:type:event:):KeyInterceptor.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "kVK_ANSI_C">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
