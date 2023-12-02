@@ -12,7 +12,7 @@ class TextProcessor {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         let body: [String: Any] = [
-            "model": "gpt-3.5-turbo",
+            "model": "gpt-4-1106-preview",
             "messages": [
                 [
                     "role": "user",

@@ -33,10 +33,38 @@ class KeyInterceptor {
         }
     }
 
+    private func captureAndReadText() {
+        print("speaking...")
+        let source = CGEventSource(stateID: .hidSystemState)
+        let cmdC = CGEvent(keyboardEventSource: source, virtualKey: CGKeyCode(kVK_ANSI_C), keyDown: true)
+        cmdC?.flags = .maskCommand
+        cmdC?.post(tap: .cghidEventTap)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            if let text = NSPasteboard.general.string(forType: .string) {
+                let speakWhisper = SpeakOpenAIAudio()
+                let voice = "alloy";
+                speakWhisper.convertTextToAudio(text: text, voice:voice) { [weak self] fileURL in
+                    guard let fileURL = fileURL else { return }
+                    if let _ = NSPasteboard.general.string(forType: .string) {
+                        NotificationCenter.default.post(name: NSNotification.Name("StartAudioPlayback"), object: nil)
+                    }
+                }
+            }
+        }
+    }
+    
+  
+    
     private func handleEvent(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? {
         if event.type == .keyDown {
             let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
             let flags = event.flags
+            
+            if keyCode == CGKeyCode(kVK_ANSI_S) && flags.contains(.maskCommand) && flags.contains(.maskAlternate) {
+                captureAndReadText()
+                return nil
+            }
             
             if keyCode == CGKeyCode(kVK_ANSI_R) && flags.contains(.maskCommand) && flags.contains(.maskAlternate) {
                 captureAndReplaceText(prefix: "return only the rephrased text:")
