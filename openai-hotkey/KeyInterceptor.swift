@@ -26,6 +26,8 @@ class KeyInterceptor {
                                      },
                                      userInfo: Unmanaged.passUnretained(self).toOpaque())
         
+        
+        
         if let eventTap = eventTap {
             let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
             CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
