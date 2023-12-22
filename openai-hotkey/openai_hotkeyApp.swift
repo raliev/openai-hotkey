@@ -1,4 +1,5 @@
 import SwiftUI
+import CocoaLumberjackSwift
 
 
 struct ContentView: View {
@@ -6,6 +7,7 @@ struct ContentView: View {
 
     @State private var showingPopup = false
     @State private var audioPlayerManager = AudioPlayerManager()
+    
     
     @StateObject private var viewModel = ContentViewModel()
     
@@ -55,8 +57,28 @@ struct openai_hotkeyApp: App {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var interceptor: KeyInterceptor?
+    var eventTapCheckTimer: Timer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        self.interceptor = KeyInterceptor(textProcessor: TextProcessor())
+        self.interceptor = KeyInterceptor(textProcessor: TextProcessor(), audioPlayerManager: AudioPlayerManager())
+        
+        eventTapCheckTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+                    self?.interceptor?.checkAndReactivateEventTap()
+                }
+        
+        DDLog.add(DDOSLogger.sharedInstance)
+                
+        let fileLogger: DDFileLogger = DDFileLogger()
+        fileLogger.rollingFrequency = TimeInterval(60*60*24)
+        fileLogger.logFileManager.maximumNumberOfLogFiles = 7
+        DDLog.add(fileLogger)
+        
+        if let fileLogger = DDLog.allLoggers.first(where: { $0 is DDFileLogger }) as? DDFileLogger {
+            print("LOGS: \(fileLogger.currentLogFileInfo?.filePath ?? "not found")")
+        }
+        
+        
     }
+    
+    
 }

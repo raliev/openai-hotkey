@@ -3,8 +3,20 @@ import AVFoundation
 class AudioPlayerManager {
     var player: AVAudioPlayer?
 
-    
-    
+    func playTicking() {
+        guard let url = Bundle.main.url(forResource: "ticking", withExtension: "mp3") else {
+                print("Error: Ticking audio file not found")
+                return
+            }
+
+            do {
+                player = try AVAudioPlayer(contentsOf: url)
+                player?.play()
+            } catch {
+                print("Error with playing the audio file: \(error)")
+            }
+    }
+
     func playAudioFile() {
         
             let fileManager = FileManager.default

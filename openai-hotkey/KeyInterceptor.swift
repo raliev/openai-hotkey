@@ -1,15 +1,47 @@
 import Cocoa
 import Carbon
+import CocoaLumberjackSwift
 
 class KeyInterceptor {
+    
+    private var reactivationTimer: Timer?
+    
+    private var runLoopSource: CFRunLoopSource?
+
+    private func startReactivationTimer() {
+        reactivationTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+            self?.checkAndReactivateEventTap()
+        }
+    }
+
+    private func stopReactivationTimer() {
+        reactivationTimer?.invalidate()
+        reactivationTimer = nil
+    }
+    
     private var eventTap: CFMachPort?
     
     private var textProcessor: TextProcessor
 
+    private var audioPlayerManager = AudioPlayerManager()
 
-    init(textProcessor: TextProcessor) {
+    func checkAndReactivateEventTap() {
+           if let eventTap = eventTap {
+               if CGEvent.tapIsEnabled(tap: eventTap) == false {
+                   CGEvent.tapEnable(tap: eventTap, enable: true)
+                   print("eventTap was deactivated and reactivated")
+               }
+           } else {
+               print("eventTap is not initialized")
+           }
+       }
+    init(textProcessor: TextProcessor, audioPlayerManager: AudioPlayerManager) {
         self.textProcessor = textProcessor
+        self.audioPlayerManager = audioPlayerManager;
+
  
+        
+        
         let eventMask = (1 << CGEventType.keyDown.rawValue)
         eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap,
                                      place: .headInsertEventTap,
@@ -18,7 +50,6 @@ class KeyInterceptor {
                                      callback: { (proxy, type, event, refcon) -> Unmanaged<CGEvent>? in
                                          if let refconUnwrapped = refcon {
                                              let interceptor = Unmanaged<KeyInterceptor>.fromOpaque(refconUnwrapped).takeUnretainedValue()
-                                             print("Обработка события: \(type)")
                                              return interceptor.handleEvent(proxy: proxy, type: type, event: event)
                                          } else {
                                              return Unmanaged.passRetained(event)
@@ -29,11 +60,32 @@ class KeyInterceptor {
         
         
         if let eventTap = eventTap {
-            let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
+            runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
             CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
             CGEvent.tapEnable(tap: eventTap, enable: true)
+            
+            startReactivationTimer();
+            
+        } else {
+            print("something is wrong with creating eventTap")
         }
     }
+    
+    deinit {
+        // Safely unwrap eventTap to handle potential nil values
+        if let eventTap = eventTap {
+            // Disable the event tap before releasing it
+            CGEvent.tapEnable(tap: eventTap, enable: false)
+
+            // Remove the tap from the run loop (no need for CFRelease in Swift)
+            CFRunLoopRemoveSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
+        } else {
+            DDLogError("Event tap was already nil in deinit")
+        }
+
+        // runLoopSource should be accessible within deinit if declared as a property
+    }
+
 
     private func captureAndReadText() {
         print("speaking...")
@@ -88,6 +140,10 @@ class KeyInterceptor {
     }
     
     private func captureAndReplaceText(prefix: String) {
+        
+        self.audioPlayerManager.playTicking();
+        // The priest had a dog.
+        
         let source = CGEventSource(stateID: .hidSystemState)
         let cmdC = CGEvent(keyboardEventSource: source, virtualKey: CGKeyCode(kVK_ANSI_C), keyDown: true)
         cmdC?.flags = .maskCommand
@@ -98,6 +154,7 @@ class KeyInterceptor {
                 self.textProcessor.processText(prefix, clipboardString) { response in
                                     DispatchQueue.main.async {
                                         self.replaceSelectedText(with: response)
+                                        self.audioPlayerManager.stopAudio();
                                     }
                                 }
                            

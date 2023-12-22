@@ -1,5 +1,7 @@
 import Foundation
 
+import CocoaLumberjackSwift
+
 class TextProcessor {
     func processText(_ prefix: String, _ text: String, completion: @escaping (String) -> Void) {
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
@@ -24,29 +26,29 @@ class TextProcessor {
 
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
-        print("sending \(body)")
+        DDLogInfo("sending \(body)")
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
-                print("Error: \(error?.localizedDescription ?? "Unknown error")")
+                DDLogError("Error: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
             
             if let httpResponse = response as? HTTPURLResponse {
-                  print("HTTP Status Code: \(httpResponse.statusCode)")
-                  print("HTTP Response Headers: \(httpResponse.allHeaderFields)")
+                  DDLogInfo("HTTP Status Code: \(httpResponse.statusCode)")
+                  DDLogInfo("HTTP Response Headers: \(httpResponse.allHeaderFields)")
               }
             if let responseText = try? JSONDecoder().decode(ChatGPTResponse.self, from: data) {
                 let resp = responseText.choices.first?.message.content
 
                     // Логгирование ответа от ChatGPT
-                    print("ChatGPT Response: \(resp ?? "Пустой ответ")")
+                    DDLogInfo("ChatGPT Response: \(resp ?? "Пустой ответ")")
 
                     completion(resp ?? "")
                 } else {
                     // Логгирование сырого ответа, если не удалось декодировать
                     let rawResponseString = String(data: data, encoding: .utf8) ?? "can't decode the response"
-                    print("Response: \(rawResponseString)")
+                    DDLogInfo("Response: \(rawResponseString)")
                 }
         }
         task.resume()
